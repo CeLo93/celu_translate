@@ -4,9 +4,16 @@ import requests
 def translate_text():
     text = entry.get("1.0", tk.END).strip()
     if text:
-        translation = translate_with_mymemory(text, 'en', 'pt')
+        max_chars_per_request = 500  # Define o máximo de caracteres por solicitação
+        parts = [text[i:i+max_chars_per_request] for i in range(0, len(text), max_chars_per_request)]
+        translations = []
+        for part in parts:
+            translation = translate_with_mymemory(part, 'en', 'pt')
+            translations.append(translation)
+        output_text = ' '.join(translations)
         output.delete("1.0", tk.END)
-        output.insert(tk.END, translation)
+        output.insert(tk.END, output_text)
+
 
 def translate_with_mymemory(text, source_lang, target_lang):
     url = 'https://api.mymemory.translated.net/get'
